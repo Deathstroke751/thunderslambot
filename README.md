@@ -22,7 +22,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Random Service Account at startup
 - Mirror/Leech by reply (soon will add for watch and clone)
 - Many bugs has been fixed
-
+  
 ## From official and Other Repositories
 - Mirror direct download links, Torrent, and Telegram files to Google Drive
 - Mirror Mega.nz links to Google Drive (If you have non-premium Mega account, it will limit download to 5GB per 6 hours)
@@ -42,6 +42,12 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Custom Filename (Only for direct links, Telegram files and Youtube-dl. Not for Mega links and Torrents)
 - Extracting and downloading password protected index links. See these examples:
 <p><a href="https://telegra.ph/Magneto-Python-Aria---Custom-Filename-Examples-01-20"> <img src="https://img.shields.io/badge/See%20Telegraph-grey?style=for-the-badge&logo=telegraph" width="170""/></a></p>
+
+## To do list
+- [ ] Switchable Team Drives
+- [ ] Assign Folder/Directory on Download
+- [ ] Mega.nz bypass limitation
+- [ ] Fix ytdl
 
 - Extract these filetypes and uploads to Google Drive
 ```
