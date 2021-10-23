@@ -36,7 +36,7 @@ def _watch(bot: Bot, update, isTar=False, isZip=False, isLeech=False):
       if qual != "audio":
         qual = f'bestvideo[height<={qual}][ext=mp4]+bestaudio/best[height<={qual}][ext=mp4]'
     except IndexError:
-      qual = "bestvideo+bestaudio/best"
+      qual = "bestvideo[ext=mp4]+bestaudio/best[ext=mp4]"
     
     try:
       name = name_args[1]
