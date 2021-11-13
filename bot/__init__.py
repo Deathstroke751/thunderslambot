@@ -330,6 +330,14 @@ except KeyError:
     SHORTENER = None
     SHORTENER_API = None
 try:
+    SHARE_SHORTENER = getConfig('SHARE_SHORTENER')
+    SHARE_SHORTENER_API = getConfig('SHARE_SHORTENER_API')
+    if len(SHARE_SHORTENER) == 0 or len(SHARE_SHORTENER_API) == 0:
+        raise KeyError
+except KeyError:
+    SHARE_SHORTENER = None
+    SHARE_SHORTENER_API = None
+try:
     IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS")
     IGNORE_PENDING_REQUESTS = IGNORE_PENDING_REQUESTS.lower() == 'true'
 except KeyError:

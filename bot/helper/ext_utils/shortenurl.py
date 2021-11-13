@@ -6,7 +6,7 @@ import base64
 import pyshorteners
 from urllib.parse import quote
 from urllib3 import disable_warnings
-from bot import SHORTENER, SHORTENER_API
+from bot import SHORTENER, SHORTENER_API, SHARE_SHORTENER, SHARE_SHORTENER_API
 
 
 def short_url(longurl):
@@ -29,3 +29,24 @@ def short_url(longurl):
         return requests.get(f'http://ouo.io/api/{SHORTENER_API}?s={longurl}', verify=False).text
     else:
         return requests.get(f'https://{SHORTENER}/api?api={SHORTENER_API}&url={longurl}&format=text').text
+
+def smol(longurl):
+    if "shorte.st" in SHARE_SHORTENER:
+        disable_warnings()
+        return requests.get(f'http://api.shorte.st/stxt/{SHARE_SHORTENER_API}/{longurl}', verify=False).text
+    elif "linkvertise" in SHARE_SHORTENER:
+        url = quote(base64.b64encode(longurl.encode("utf-8")))
+        linkvertise = [
+            f"https://link-to.net/{SHARE_SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}",
+            f"https://up-to-down.net/{SHARE_SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}",
+            f"https://direct-link.net/{SHARE_SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}",
+            f"https://file-link.net/{SHARE_SHORTENER_API}/{random.random() * 1000}/dynamic?r={url}"]
+        return random.choice(linkvertise)
+    elif "bitly.com" in SHARE_SHORTENER:
+        s = pyshorteners.Shortener(api_key=SHARE_SHORTENER_API)
+        return s.bitly.short(longurl)
+    elif "ouo.io" in SHARE_SHORTENER:
+        disable_warnings()
+        return requests.get(f'http://ouo.io/api/{SHARE_SHORTENER_API}?s={longurl}', verify=False).text
+    else:
+        return requests.get(f'https://{SHARE_SHORTENER}/api?api={SHARE_SHORTENER_API}&url={longurl}&format=text').text

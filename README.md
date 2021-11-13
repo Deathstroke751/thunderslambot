@@ -155,6 +155,8 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `TAR_UNZIP_LIMIT`: To limit the size of mirroring as Tar or unzipmirror. Don't add unit, the default unit is `GB`.
 - `VIEW_LINK`: View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if its URL ends with `?a=view`, if yes make it `True` it will work (Compatible with https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index Code)
 - `SHARE_WHATSAPP`: Share Via WhatsApp button to share mirrors and clones into WhatsApp directly. If yes make it `True`
+- `SHARE_SHORTENER`: Fill your Shortener phrase if you are using SHARE_WHATSAPP
+- `SHARE_SHORTENER_API`: Fill your Shortener API key if you are using SHARE_WHATSAPP
 - `UPTOBOX_TOKEN`: Uptobox token to mirror uptobox links. Get it from [Uptobox Premium Account](https://uptobox.com/my_account).
 - `IGNORE_PENDING_REQUESTS`: If you want the bot to ignore pending requests after it restarts, set this to `True`.
 - `STATUS_LIMIT`: Limit the no. of tasks shown in status message with button. (**NOTE**: Recommended limit is `4` tasks at max).

@@ -15,10 +15,10 @@ from telegram import InlineKeyboardMarkup
 
 from bot import Interval, INDEX_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, \
                 BUTTON_SIX_NAME, BUTTON_SIX_URL, BLOCK_MEGA_FOLDER, BLOCK_MEGA_LINKS, VIEW_LINK, SHARE_WHATSAPP, aria2, \
-                dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, SHORTENER, SHORTENER_API, \
+                dispatcher, DOWNLOAD_DIR, download_dict, download_dict_lock, SHORTENER, SHORTENER_API, SHARE_SHORTENER, SHARE_SHORTENER_API, \
                 TAR_UNZIP_LIMIT, TG_SPLIT_SIZE
 from bot.helper.ext_utils import fs_utils, bot_utils
-from bot.helper.ext_utils.shortenurl import short_url
+from bot.helper.ext_utils.shortenurl import short_url, smol
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException, NotSupportedExtractionArchive
 from bot.helper.mirror_utils.download_utils.aria2_download import AriaDownloadHelper
 from bot.helper.mirror_utils.download_utils.mega_downloader import MegaDownloadHelper
@@ -288,6 +288,7 @@ class MirrorListener(listeners.MirrorListeners):
                         if VIEW_LINK:
                             buttons.buildbutton("🌐 View Link", share_urls)
             chusej = msg
+            
             def formet_ples(chusej,chugurl):
                 chusej += f"\n\nIndex Url: {chugurl}"
                 chusej = chusej.replace("<b>", "") 
@@ -306,10 +307,12 @@ class MirrorListener(listeners.MirrorListeners):
                 chusej = chusej.replace("", "")
                 return chusej
 
-            if SHARE_WHATSAPP:
-                chugarel = formet_ples(chusej, chugurl)
-                chugarel = f'https://api.whatsapp.com/send?&text={chugarel}'
-                buttons.buildbutton("🔗Share Via WhatsApp", chugarel)
+            if SHARE_SHORTENER is not None and SHARE_SHORTENER_API is not None:
+                chugurl = smol(chugurl)
+                if SHARE_WHATSAPP:
+                    chugarel = formet_ples(chusej, chugurl)
+                    chugarel = f'https://api.whatsapp.com/send?&text={chugarel}'
+                    buttons.buildbutton("🔗Share Via WhatsApp", chugarel)
 
             if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
                 buttons.buildbutton(f"{BUTTON_FIVE_NAME}", f"{BUTTON_FIVE_URL}")
