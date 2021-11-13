@@ -154,6 +154,7 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `TORRENT_DIRECT_LIMIT`: To limit the Torrent/Direct mirror size. Don't add unit, the default unit is `GB`.
 - `TAR_UNZIP_LIMIT`: To limit the size of mirroring as Tar or unzipmirror. Don't add unit, the default unit is `GB`.
 - `VIEW_LINK`: View Link button to open file Index Link in browser instead of direct download link, you can figure out if it's compatible with your Index code or not, open any video from you Index and check if its URL ends with `?a=view`, if yes make it `True` it will work (Compatible with https://gitlab.com/ParveenBhadooOfficial/Google-Drive-Index Code)
+- `SHARE_WHATSAPP`: Share Via WhatsApp button to share mirrors and clones into WhatsApp directly. If yes make it `True`
 - `UPTOBOX_TOKEN`: Uptobox token to mirror uptobox links. Get it from [Uptobox Premium Account](https://uptobox.com/my_account).
 - `IGNORE_PENDING_REQUESTS`: If you want the bot to ignore pending requests after it restarts, set this to `True`.
 - `STATUS_LIMIT`: Limit the no. of tasks shown in status message with button. (**NOTE**: Recommended limit is `4` tasks at max).
@@ -172,7 +173,6 @@ shorte.st, linkvertise.com , ouo.io
 Above are the supported URL Shorteners. Except these only some URL Shorteners are supported.
 ### Add more buttons (Optional Field)
 Three buttons are already added including Drive Link, Index Link, and View Link, you can add extra buttons, if you don't know what are the below entries, simply leave them empty.
-- `BUTTON_FOUR_NAME`:
 - `BUTTON_FOUR_URL`:
 - `BUTTON_FIVE_NAME`:
 - `BUTTON_FIVE_URL`:
