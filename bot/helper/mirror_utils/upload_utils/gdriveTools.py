@@ -23,10 +23,10 @@ from telegram import InlineKeyboardMarkup
 from bot.helper.telegram_helper import button_build
 from telegraph import Telegraph
 from bot import parent_id, DOWNLOAD_DIR, IS_TEAM_DRIVE, INDEX_URL, \
-    USE_SERVICE_ACCOUNTS, telegraph_token, BUTTON_FOUR_NAME, BUTTON_FOUR_URL, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, BUTTON_SIX_NAME, BUTTON_SIX_URL, SHORTENER, SHORTENER_API, VIEW_LINK, DRIVES_NAMES, DRIVES_IDS, INDEX_URLS, RECURSIVE_SEARCH
+    USE_SERVICE_ACCOUNTS, telegraph_token, BUTTON_FIVE_NAME, BUTTON_FIVE_URL, BUTTON_SIX_NAME, BUTTON_SIX_URL, SHORTENER, SHORTENER_API, SHARE_SHORTENER, SHARE_SHORTENER_API, VIEW_LINK, SHARE_WHATSAPP,DRIVES_NAMES, DRIVES_IDS, INDEX_URLS, RECURSIVE_SEARCH
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, setInterval
 from bot.helper.ext_utils.fs_utils import get_mime_type, get_path_size
-from bot.helper.ext_utils.shortenurl import short_url
+from bot.helper.ext_utils.shortenurl import short_url, smol
 
 LOGGER = logging.getLogger(__name__)
 logging.getLogger('googleapiclient.discovery').setLevel(logging.ERROR)
@@ -389,6 +389,7 @@ class GoogleDriveHelper:
                 if INDEX_URL is not None:
                     url_path = requests.utils.quote(f'{meta.get("name")}')
                     url = f'{INDEX_URL}/{url_path}/'
+                    chugurl = url
                     if SHORTENER is not None and SHORTENER_API is not None:
                         siurl = short_url(url)
                         buttons.buildbutton("⚡ Index Link", siurl)
@@ -416,6 +417,7 @@ class GoogleDriveHelper:
                 if INDEX_URL is not None:
                     url_path = requests.utils.quote(f'{file.get("name")}')
                     url = f'{INDEX_URL}/{url_path}'
+                    chugurl = url
                     urls = f'{INDEX_URL}/{url_path}?a=view'
                     if SHORTENER is not None and SHORTENER_API is not None:
                         siurl = short_url(url)
@@ -427,8 +429,33 @@ class GoogleDriveHelper:
                         buttons.buildbutton("⚡ Index Link", url)
                         if VIEW_LINK:
                             buttons.buildbutton("🌐 View Link", urls)
-            if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
-                buttons.buildbutton(f"{BUTTON_FOUR_NAME}", f"{BUTTON_FOUR_URL}")
+
+            chusej = msg
+            def formet_ples(chusej,chugurl):
+                chusej += f"\n\nIndex Url: {chugurl}"
+                chusej = chusej.replace("<b>", "") 
+                chusej = chusej.replace("</b>", "") 
+                chusej = chusej.replace("<code>", "")
+                chusej = chusej.replace("</code>", "")
+                chusej = chusej.replace("\n", "%0A")
+                chusej = chusej.replace(" ", "%20")
+                chusej = chusej.replace(":", "%3A")
+                chusej = chusej.replace("(", "%28")
+                chusej = chusej.replace(")", "%29")
+                chusej = chusej.replace("[", "%5B")
+                chusej = chusej.replace("]", "%5D")
+                chusej = chusej.replace("{", "%7B")
+                chusej = chusej.replace("}", "%7D")
+                chusej = chusej.replace("", "")
+                return chusej
+
+            if SHARE_SHORTENER is not None and SHARE_SHORTENER_API is not None:
+                chugurl = smol(chugurl)
+                if SHARE_WHATSAPP:
+                    chugarel = formet_ples(chusej, chugurl)
+                    chugarel = f'https://api.whatsapp.com/send?&text={chugarel}'
+                    buttons.buildbutton("🔗Share Via WhatsApp", chugarel)
+
             if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
                 buttons.buildbutton(f"{BUTTON_FIVE_NAME}", f"{BUTTON_FIVE_URL}")
             if BUTTON_SIX_NAME is not None and BUTTON_SIX_URL is not None:
@@ -576,9 +603,9 @@ class GoogleDriveHelper:
                     content += f'<b> | <a href="https://telegra.ph/{self.path[nxt_page]}">Next</a></b>'
                     nxt_page += 1
             Telegraph(access_token=telegraph_token).edit_page(path = self.path[prev_page],
-                                 title = 'Mirror-leech-bot Search',
-                                 author_name='Mirror-leech-bot',
-                                 author_url='https://github.com/anasty17/mirror-leech-telegram-bot',
+                                 title = 'ThunderSlamBot Search',
+                                 author_name='ThunderSlamBot',
+                                 author_url='https://github.com/Deathstroke751/thunderslambot',
                                  html_content=content)
         return
 
@@ -773,9 +800,9 @@ class GoogleDriveHelper:
 
         for content in self.telegraph_content :
             self.path.append(Telegraph(access_token=telegraph_token).create_page(
-                                                    title = 'Mirror-leech-bot Search',
-                                                    author_name='Mirror-leech-bot',
-                                                    author_url='https://github.com/anasty17/mirror-leech-telegram-bot',
+                                                    title = 'ThunderSlamBot Search',
+                                                    author_name='ThunderSlamBot',
+                                                    author_url='https://github.com/Deathstroke751/thunderslambot',
                                                     html_content=content
                                                     )['path'])
 

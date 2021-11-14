@@ -269,14 +269,7 @@ try:
         TAR_UNZIP_LIMIT = float(TAR_UNZIP_LIMIT)
 except KeyError:
     TAR_UNZIP_LIMIT = None
-try:
-    BUTTON_FOUR_NAME = getConfig('BUTTON_FOUR_NAME')
-    BUTTON_FOUR_URL = getConfig('BUTTON_FOUR_URL')
-    if len(BUTTON_FOUR_NAME) == 0 or len(BUTTON_FOUR_URL) == 0:
-        raise KeyError
-except KeyError:
-    BUTTON_FOUR_NAME = None
-    BUTTON_FOUR_URL = None
+
 try:
     BUTTON_FIVE_NAME = getConfig('BUTTON_FIVE_NAME')
     BUTTON_FIVE_URL = getConfig('BUTTON_FIVE_URL')
@@ -303,6 +296,11 @@ try:
     VIEW_LINK = VIEW_LINK.lower() == 'true'
 except KeyError:
     VIEW_LINK = False
+try:
+    SHARE_WHATSAPP = getConfig('SHARE_WHATSAPP')
+    SHARE_WHATSAPP = SHARE_WHATSAPP.lower() == 'true'
+except KeyError:
+    SHARE_WHATSAPP = False
 try:
     IS_TEAM_DRIVE = getConfig('IS_TEAM_DRIVE')
     IS_TEAM_DRIVE = IS_TEAM_DRIVE.lower() == 'true'
@@ -331,6 +329,14 @@ try:
 except KeyError:
     SHORTENER = None
     SHORTENER_API = None
+try:
+    SHARE_SHORTENER = getConfig('SHARE_SHORTENER')
+    SHARE_SHORTENER_API = getConfig('SHARE_SHORTENER_API')
+    if len(SHARE_SHORTENER) == 0 or len(SHARE_SHORTENER_API) == 0:
+        raise KeyError
+except KeyError:
+    SHARE_SHORTENER = None
+    SHARE_SHORTENER_API = None
 try:
     IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS")
     IGNORE_PENDING_REQUESTS = IGNORE_PENDING_REQUESTS.lower() == 'true'
