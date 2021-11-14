@@ -21,6 +21,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Use Toke.pickle if file not found with Service Account
 - Random Service Account at startup
 - Mirror/Leech by reply (soon will add for watch and clone)
+- Share to WhatsApp button to share directly after mirroring
 - Many bugs has been fixed
   
 ## From official and Other Repositories
