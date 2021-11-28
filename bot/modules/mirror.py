@@ -313,7 +313,7 @@ class MirrorListener(listeners.MirrorListeners):
                 if SHARE_WHATSAPP:
                     chugarel = formet_ples(chusej, chugurl)
                     chugarel = f'https://api.whatsapp.com/send?&text={chugarel}'
-                    buttons.buildbutton("🔗Share Via WhatsApp", chugarel)
+                    buttons.buildbutton("🔗 WhatsApp Share", chugarel)
 
             if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
                 buttons.buildbutton(f"{BUTTON_FIVE_NAME}", f"{BUTTON_FIVE_URL}")
