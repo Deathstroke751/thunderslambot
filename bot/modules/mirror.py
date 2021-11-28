@@ -270,6 +270,7 @@ class MirrorListener(listeners.MirrorListeners):
                 chugurl = share_url
                 if os.path.isdir(f'{DOWNLOAD_DIR}/{self.uid}/{download_dict[self.uid].name()}'):
                     share_url += '/'
+                    chugurl = share_url
                     if SHORTENER is not None and SHORTENER_API is not None:
                         siurl = short_url(share_url)
                         buttons.buildbutton("⚡ Index Link", siurl)
