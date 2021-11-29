@@ -287,7 +287,8 @@ class MirrorListener(listeners.MirrorListeners):
                     else:
                         buttons.buildbutton("⚡ Index Link", share_url)
                         if VIEW_LINK:
-                            buttons.buildbutton("🌐 View Link", share_urls)
+                          chugurl = share_urls
+                          buttons.buildbutton("🌐 View Link", share_urls)
             chusej = msg
             
             def formet_ples(chusej,chugurl):
@@ -310,6 +311,7 @@ class MirrorListener(listeners.MirrorListeners):
 
             if SHARE_SHORTENER is not None and SHARE_SHORTENER_API is not None:
                 chugurl = smol(chugurl)
+                LOGGER.info(f'Done shortening WhatsApp Share Link')
                 if SHARE_WHATSAPP:
                     chugarel = formet_ples(chusej, chugurl)
                     chugarel = f'https://api.whatsapp.com/send?&text={chugarel}'

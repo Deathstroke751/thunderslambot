@@ -428,6 +428,7 @@ class GoogleDriveHelper:
                     else:
                         buttons.buildbutton("⚡ Index Link", url)
                         if VIEW_LINK:
+                            chugurl = urls
                             buttons.buildbutton("🌐 View Link", urls)
 
             chusej = msg
@@ -451,6 +452,7 @@ class GoogleDriveHelper:
 
             if SHARE_SHORTENER is not None and SHARE_SHORTENER_API is not None:
                 chugurl = smol(chugurl)
+                LOGGER.info(f'Done shortening WhatsApp Share Link')
                 if SHARE_WHATSAPP:
                     chugarel = formet_ples(chusej, chugurl)
                     chugarel = f'https://api.whatsapp.com/send?&text={chugarel}'
