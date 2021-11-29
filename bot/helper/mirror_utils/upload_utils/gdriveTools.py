@@ -428,6 +428,7 @@ class GoogleDriveHelper:
                     else:
                         buttons.buildbutton("⚡ Index Link", url)
                         if VIEW_LINK:
+                            chugurl = urls
                             buttons.buildbutton("🌐 View Link", urls)
 
             chusej = msg
