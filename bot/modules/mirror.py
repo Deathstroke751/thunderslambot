@@ -287,7 +287,8 @@ class MirrorListener(listeners.MirrorListeners):
                     else:
                         buttons.buildbutton("⚡ Index Link", share_url)
                         if VIEW_LINK:
-                            buttons.buildbutton("🌐 View Link", share_urls)
+                          chugurl = share_urls
+                          buttons.buildbutton("🌐 View Link", share_urls)
             chusej = msg
             
             def formet_ples(chusej,chugurl):
