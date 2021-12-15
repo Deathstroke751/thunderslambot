@@ -301,6 +301,7 @@ class MirrorListener(listeners.MirrorListeners):
                 chusej = chusej.replace(" ", "%20")
                 chusej = chusej.replace(":", "%3A")
                 chusej = chusej.replace("(", "%28")
+                chusej = chusej.replace("&", "%26")
                 chusej = chusej.replace(")", "%29")
                 chusej = chusej.replace("[", "%5B")
                 chusej = chusej.replace("]", "%5D")
