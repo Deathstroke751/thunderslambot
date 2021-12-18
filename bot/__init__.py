@@ -24,6 +24,8 @@ faulthandler.enable()
 socket.setdefaulttimeout(600)
 
 botStartTime = time.time()
+
+# Truncate file log.txt if it exists
 if os.path.exists('log.txt'):
     with open('log.txt', 'r+') as f:
         f.truncate(0)
@@ -36,12 +38,13 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 LOGGER = logging.getLogger(__name__)
 
 CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
-if CONFIG_FILE_URL is not None:
+if not CONFIG_FILE_URL:
     res = requests.get(CONFIG_FILE_URL)
     if res.status_code == 200:
-        with open('config.env', 'wb+') as f:
+        if os.path.exists('config.env'):
+            logging.info('Rewriting config.env')
+        with open('config.env', 'wb') as f:
             f.write(res.content)
-            f.close()
     else:
         logging.error(f"Failed to download config.env {res.status_code}")
 
