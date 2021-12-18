@@ -29,7 +29,8 @@ if os.path.exists('log.txt'):
         f.truncate(0)
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-                    handlers=[logging.FileHandler('log.txt'), logging.StreamHandler()],
+                    handlers=[logging.FileHandler(
+                        'log.txt'), logging.StreamHandler()],
                     level=logging.INFO)
 
 LOGGER = logging.getLogger(__name__)
@@ -48,19 +49,23 @@ load_dotenv('config.env')
 
 SERVER_PORT = os.environ.get('SERVER_PORT', None)
 PORT = os.environ.get('PORT', SERVER_PORT)
-web = subprocess.Popen([f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
+web = subprocess.Popen(
+    [f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
 time.sleep(1)
 alive = subprocess.Popen(["python3", "alive.py"])
 subprocess.run(["mkdir", "-p", "qBittorrent/config"])
-subprocess.run(["cp", "qBittorrent.conf", "qBittorrent/config/qBittorrent.conf"])
+subprocess.run(["cp", "qBittorrent.conf",
+               "qBittorrent/config/qBittorrent.conf"])
 subprocess.run(["qbittorrent-nox", "-d", "--profile=."])
 Interval = []
 DRIVES_NAMES = []
 DRIVES_IDS = []
 INDEX_URLS = []
 
+
 def getConfig(name: str):
     return os.environ[name]
+
 
 def mktable():
     try:
@@ -73,6 +78,7 @@ def mktable():
     except Error as e:
         logging.error(e)
         exit(1)
+
 
 try:
     if bool(getConfig('_____REMOVE_THIS_LINE_____')):
@@ -91,7 +97,8 @@ aria2 = aria2p.API(
 
 
 def get_client() -> qba.TorrentsAPIMixIn:
-    qb_client = qba.Client(host="localhost", port=8090, username="admin", password="adminadmin")
+    qb_client = qba.Client(host="localhost", port=8090,
+                           username="admin", password="adminadmin")
     try:
         qb_client.auth_log_in()
         #qb_client.application.set_preferences({"disk_cache":64, "incomplete_files_ext":True, "max_connec":3000, "max_connec_per_torrent":300, "async_io_threads":8, "preallocate_all":True, "upnp":True, "dl_limit":-1, "up_limit":-1, "dht":True, "pex":True, "lsd":True, "encryption":0, "queueing_enabled":True, "max_active_downloads":15, "max_active_torrents":50, "dont_count_slow_torrents":True, "bittorrent_protocol":0, "recheck_completed_torrents":True, "enable_multi_connections_from_same_ip":True, "slow_torrent_dl_rate_threshold":100,"slow_torrent_inactive_timer":600})
@@ -118,15 +125,15 @@ SUDO_USERS = set()
 AS_DOC_USERS = set()
 AS_MEDIA_USERS = set()
 if os.path.exists('authorized_chats.txt'):
-    with open('authorized_chats.txt', 'r+') as f:
-        lines = f.readlines()
-        for line in lines:
+    with open('authorized_chats.txt', 'r') as f:
+        for line in f:
             AUTHORIZED_CHATS.add(int(line.split()[0]))
+
 if os.path.exists('sudo_users.txt'):
-    with open('sudo_users.txt', 'r+') as f:
-        lines = f.readlines()
-        for line in lines:
+    with open('sudo_users.txt', 'r') as f:
+        for line in f:
             SUDO_USERS.add(int(line.split()[0]))
+
 try:
     achats = getConfig('AUTHORIZED_CHATS')
     achats = achats.split(" ")
@@ -134,6 +141,7 @@ try:
         AUTHORIZED_CHATS.add(int(chats))
 except:
     pass
+
 try:
     schats = getConfig('SUDO_USERS')
     schats = schats.split(" ")
@@ -141,37 +149,42 @@ try:
         SUDO_USERS.add(int(chats))
 except:
     pass
+
 try:
     BOT_TOKEN = getConfig('BOT_TOKEN')
     parent_id = getConfig('GDRIVE_FOLDER_ID')
     DOWNLOAD_DIR = getConfig('DOWNLOAD_DIR')
     if not DOWNLOAD_DIR.endswith("/"):
         DOWNLOAD_DIR = DOWNLOAD_DIR + '/'
-    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
+    DOWNLOAD_STATUS_UPDATE_INTERVAL = int(
+        getConfig('DOWNLOAD_STATUS_UPDATE_INTERVAL'))
     OWNER_ID = int(getConfig('OWNER_ID'))
-    AUTO_DELETE_MESSAGE_DURATION = int(getConfig('AUTO_DELETE_MESSAGE_DURATION'))
+    AUTO_DELETE_MESSAGE_DURATION = int(
+        getConfig('AUTO_DELETE_MESSAGE_DURATION'))
     TELEGRAM_API = getConfig('TELEGRAM_API')
     TELEGRAM_HASH = getConfig('TELEGRAM_HASH')
 except KeyError as e:
     LOGGER.error("One or more env variables missing! Exiting now")
     exit(1)
+
 try:
     DB_URI = getConfig('DATABASE_URL')
     if len(DB_URI) == 0:
         raise KeyError
 except KeyError:
     DB_URI = None
+
 if DB_URI is not None:
     try:
         conn = psycopg2.connect(DB_URI)
         cur = conn.cursor()
         sql = "SELECT * from users;"
         cur.execute(sql)
-        rows = cur.fetchall()  #returns a list ==> (uid, sudo)
-        for row in rows:
-            AUTHORIZED_CHATS.add(row[0])
-            if row[1]:
-                SUDO_USERS.add(row[0])
+        rows = cur.fetchall()  # returns a list ==> (uid, sudo)
+        for uid, sudo in rows:
+            AUTHORIZED_CHATS.add(uid)
+            if sudo:
+                SUDO_USERS.add(uid)
     except Error as e:
         if 'relation "users" does not exist' in str(e):
             mktable()
@@ -183,7 +196,8 @@ if DB_URI is not None:
         conn.close()
 
 LOGGER.info("Generating USER_SESSION_STRING")
-app = Client('pyrogram', api_id=int(TELEGRAM_API), api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN)
+app = Client('pyrogram', api_id=int(TELEGRAM_API),
+             api_hash=TELEGRAM_HASH, bot_token=BOT_TOKEN)
 
 # Generate Telegraph Token
 sname = ''.join(random.SystemRandom().choices(string.ascii_letters, k=8))
@@ -200,6 +214,7 @@ try:
         TG_SPLIT_SIZE = int(TG_SPLIT_SIZE)
 except KeyError:
     TG_SPLIT_SIZE = 2097152000
+
 try:
     STATUS_LIMIT = getConfig('STATUS_LIMIT')
     if len(STATUS_LIMIT) == 0:
@@ -208,11 +223,13 @@ try:
         STATUS_LIMIT = int(STATUS_LIMIT)
 except KeyError:
     STATUS_LIMIT = None
+
 try:
     MEGA_API_KEY = getConfig('MEGA_API_KEY')
 except KeyError:
     logging.warning('MEGA API KEY not provided!')
     MEGA_API_KEY = None
+
 try:
     MEGA_EMAIL_ID = getConfig('MEGA_EMAIL_ID')
     MEGA_PASSWORD = getConfig('MEGA_PASSWORD')
@@ -222,21 +239,23 @@ except KeyError:
     logging.warning('MEGA Credentials not provided!')
     MEGA_EMAIL_ID = None
     MEGA_PASSWORD = None
+
 try:
     UPTOBOX_TOKEN = getConfig('UPTOBOX_TOKEN')
 except KeyError:
     logging.warning('UPTOBOX_TOKEN not provided!')
     UPTOBOX_TOKEN = None
+
 try:
     INDEX_URL = getConfig('INDEX_URL')
     if len(INDEX_URL) == 0:
-        INDEX_URL = None
-        INDEX_URLS.append(None)
+        raise KeyError
     else:
         INDEX_URLS.append(INDEX_URL)
 except KeyError:
     INDEX_URL = None
     INDEX_URLS.append(None)
+
 try:
     TORRENT_DIRECT_LIMIT = getConfig('TORRENT_DIRECT_LIMIT')
     if len(TORRENT_DIRECT_LIMIT) == 0:
@@ -245,6 +264,7 @@ try:
         TORRENT_DIRECT_LIMIT = float(TORRENT_DIRECT_LIMIT)
 except KeyError:
     TORRENT_DIRECT_LIMIT = None
+
 try:
     CLONE_LIMIT = getConfig('CLONE_LIMIT')
     if len(CLONE_LIMIT) == 0:
@@ -253,6 +273,7 @@ try:
         CLONE_LIMIT = float(CLONE_LIMIT)
 except KeyError:
     CLONE_LIMIT = None
+
 try:
     MEGA_LIMIT = getConfig('MEGA_LIMIT')
     if len(MEGA_LIMIT) == 0:
@@ -261,6 +282,7 @@ try:
         MEGA_LIMIT = float(MEGA_LIMIT)
 except KeyError:
     MEGA_LIMIT = None
+
 try:
     TAR_UNZIP_LIMIT = getConfig('TAR_UNZIP_LIMIT')
     if len(TAR_UNZIP_LIMIT) == 0:
@@ -278,6 +300,7 @@ try:
 except KeyError:
     BUTTON_FIVE_NAME = None
     BUTTON_FIVE_URL = None
+
 try:
     BUTTON_SIX_NAME = getConfig('BUTTON_SIX_NAME')
     BUTTON_SIX_URL = getConfig('BUTTON_SIX_URL')
@@ -286,41 +309,49 @@ try:
 except KeyError:
     BUTTON_SIX_NAME = None
     BUTTON_SIX_URL = None
+
 try:
     STOP_DUPLICATE = getConfig('STOP_DUPLICATE')
     STOP_DUPLICATE = STOP_DUPLICATE.lower() == 'true'
 except KeyError:
     STOP_DUPLICATE = False
+
 try:
     VIEW_LINK = getConfig('VIEW_LINK')
     VIEW_LINK = VIEW_LINK.lower() == 'true'
 except KeyError:
     VIEW_LINK = False
+
 try:
     SHARE_WHATSAPP = getConfig('SHARE_WHATSAPP')
     SHARE_WHATSAPP = SHARE_WHATSAPP.lower() == 'true'
 except KeyError:
     SHARE_WHATSAPP = False
+
 try:
     IS_TEAM_DRIVE = getConfig('IS_TEAM_DRIVE')
     IS_TEAM_DRIVE = IS_TEAM_DRIVE.lower() == 'true'
 except KeyError:
     IS_TEAM_DRIVE = False
+
 try:
     USE_SERVICE_ACCOUNTS = getConfig('USE_SERVICE_ACCOUNTS')
     USE_SERVICE_ACCOUNTS = USE_SERVICE_ACCOUNTS.lower() == 'true'
 except KeyError:
     USE_SERVICE_ACCOUNTS = False
+
 try:
     BLOCK_MEGA_FOLDER = getConfig('BLOCK_MEGA_FOLDER')
     BLOCK_MEGA_FOLDER = BLOCK_MEGA_FOLDER.lower() == 'true'
 except KeyError:
     BLOCK_MEGA_FOLDER = False
+
 try:
     BLOCK_MEGA_LINKS = getConfig('BLOCK_MEGA_LINKS')
     BLOCK_MEGA_LINKS = BLOCK_MEGA_LINKS.lower() == 'true'
 except KeyError:
     BLOCK_MEGA_LINKS = False
+
 try:
     SHORTENER = getConfig('SHORTENER')
     SHORTENER_API = getConfig('SHORTENER_API')
@@ -329,6 +360,7 @@ try:
 except KeyError:
     SHORTENER = None
     SHORTENER_API = None
+
 try:
     SHARE_SHORTENER = getConfig('SHARE_SHORTENER')
     SHARE_SHORTENER_API = getConfig('SHARE_SHORTENER_API')
@@ -337,11 +369,13 @@ try:
 except KeyError:
     SHARE_SHORTENER = None
     SHARE_SHORTENER_API = None
+
 try:
     IGNORE_PENDING_REQUESTS = getConfig("IGNORE_PENDING_REQUESTS")
     IGNORE_PENDING_REQUESTS = IGNORE_PENDING_REQUESTS.lower() == 'true'
 except KeyError:
     IGNORE_PENDING_REQUESTS = False
+
 try:
     BASE_URL = getConfig('BASE_URL_OF_BOT')
     if len(BASE_URL) == 0:
@@ -349,21 +383,25 @@ try:
 except KeyError:
     logging.warning('BASE_URL_OF_BOT not provided!')
     BASE_URL = None
+
 try:
     IS_VPS = getConfig('IS_VPS')
     IS_VPS = IS_VPS.lower() == 'true'
 except KeyError:
     IS_VPS = False
+
 try:
     AS_DOCUMENT = getConfig('AS_DOCUMENT')
     AS_DOCUMENT = AS_DOCUMENT.lower() == 'true'
 except KeyError:
     AS_DOCUMENT = False
+
 try:
     RECURSIVE_SEARCH = getConfig('RECURSIVE_SEARCH')
     RECURSIVE_SEARCH = RECURSIVE_SEARCH.lower() == 'true'
 except KeyError:
     RECURSIVE_SEARCH = False
+
 try:
     TOKEN_PICKLE_URL = getConfig('TOKEN_PICKLE_URL')
     if len(TOKEN_PICKLE_URL) == 0:
@@ -379,6 +417,7 @@ try:
             raise KeyError
 except KeyError:
     pass
+
 try:
     ACCOUNTS_ZIP_URL = getConfig('ACCOUNTS_ZIP_URL')
     if len(ACCOUNTS_ZIP_URL) == 0:
@@ -396,6 +435,7 @@ try:
         os.remove("accounts.zip")
 except KeyError:
     pass
+
 try:
     MULTI_SEARCH_URL = getConfig('MULTI_SEARCH_URL')
     if len(MULTI_SEARCH_URL) == 0:
@@ -429,6 +469,7 @@ if os.path.exists('drive_folder'):
             except IndexError as e:
                 INDEX_URLS.append(None)
 
-updater = tg.Updater(token=BOT_TOKEN, request_kwargs={'read_timeout': 30, 'connect_timeout': 10})
+updater = tg.Updater(token=BOT_TOKEN, request_kwargs={
+                     'read_timeout': 30, 'connect_timeout': 10})
 bot = updater.bot
 dispatcher = updater.dispatcher
