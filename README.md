@@ -96,10 +96,7 @@ sudo pacman -S docker python
 pip3 install -r requirements-cli.txt
 ```
 ## Generate Database
-<details>
-    <summary><b>Click Here For More Details</b></summary>
-
-**1. Using ElephantSQL**
+### 1. Using ElephantSQL
 - Go to https://elephantsql.com and create account (skip this if you already have **ElephantSQL** account)
 - Hit `Create New Instance`
 - Follow the further instructions in the screen
@@ -109,10 +106,8 @@ pip3 install -r requirements-cli.txt
 - Select your database name
 - Copy your database url, and fill to `DATABASE_URL` in config
 
-**2. Using Heroku PostgreSQL**
+### 2. Using Heroku PostgreSQL
 <p><a href="https://dev.to/prisma/how-to-setup-a-free-postgresql-database-on-heroku-1dc1"> <img src="https://img.shields.io/badge/See%20Dev.to-black?style=for-the-badge&logo=dev.to" width="160""/></a></p>
-
-</details>
 
 ## Setting up config file
 
@@ -124,7 +119,7 @@ cp config_sample.env config.env
 _____REMOVE_THIS_LINE_____=True
 ```
 Fill up rest of the fields. Meaning of each field is discussed below:
-### Required Field
+### Required Fields
 - `BOT_TOKEN`: The Telegram Bot Token that you got from [@BotFather](https://t.me/BotFather)
 - `TELEGRAM_API`: This is to authenticate your Telegram account for downloading Telegram files. You can get this from https://my.telegram.org. **NOTE**: DO NOT put this in quotes.
 - `TELEGRAM_HASH`: This is to authenticate your Telegram account for downloading Telegram files. You can get this from https://my.telegram.org
@@ -134,7 +129,8 @@ Fill up rest of the fields. Meaning of each field is discussed below:
 - `DOWNLOAD_STATUS_UPDATE_INTERVAL`: A short interval of time in seconds after which the Mirror progress/status message is updated. (I recommend to keep it to `7` seconds at least)  
 - `AUTO_DELETE_MESSAGE_DURATION`: Interval of time (in seconds), after which the bot deletes it's message (and command message) which is expected to be viewed instantly. (**NOTE**: Set to `-1` to never automatically delete messages)
 - `BASE_URL_OF_BOT`: (Required for Heroku to avoid sleep/idling) Valid BASE URL of app where the bot is deployed. Format of URL should be `http://myip` (where `myip` is the IP/Domain of your bot) or if you have chosen other port than `80` then fill in this format `http://myip:port`, for Heroku fill `https://yourappname.herokuapp.com` (**NOTE**: Do not put slash at the end), still got idling? You can use http://cron-job.org to ping your Heroku app.
-### Optional Field
+
+### Optional Fields
 - `ACCOUNTS_ZIP_URL`: Only if you want to load your Service Account externally from an Index Link. Archive the accounts folder to a zip file. Fill this with the direct link of that file.
 - `TOKEN_PICKLE_URL`: Only if you want to load your **token.pickle** externally from an Index Link. Fill this with the direct link of that file.
 - `MULTI_SEARCH_URL`: To use search/list in multiple TD/folder. Run driveid.py in your terminal and follow it. It will generate a file **drive_folder** when you finish. Upload that file [here](https://gist.github.com/) with the same file name. Open the raw file of that gist, it's URL will be your required config. Check wiki for gist related help. 
@@ -365,8 +361,8 @@ Then add emails from emails.txt to Google Group, after that add this Google Grou
 python3 add_to_team_drive.py -d SharedTeamDriveSrcID
 ```
 
-# Youtube-dl and index authentication using .netrc file
-For using your premium accounts in Youtube-dl or for protected Index Links, edit the netrc file according to following format:
+# Youtube-dl and index authentication using `.netrc` file
+For using your premium accounts in Youtube-dl or for protected Index Links, edit the `.netrc` file with in the following format:
 ```
 machine host login username password my_youtube_password
 ```
@@ -374,5 +370,5 @@ For Index Link with only password without username, even http auth will not work
 ```
 machine example.workers.dev password index_password
 ```
-Where host is the name of extractor (eg. Youtube, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
+Where `host` is the name of extractor (eg. Youtube, Twitch). Multiple accounts of different hosts can be added each separated by a new line.
 
