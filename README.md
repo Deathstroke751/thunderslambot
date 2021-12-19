@@ -18,7 +18,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - Multi-Search by token.pickle if exists 
 - Extract rar, zip and 7z splits with or without password
 - Zip file/folder with or without password
-- Use Toke.pickle if file not found with Service Account
+- Use Token.pickle if file not found with Service Account
 - Random Service Account at startup
 - Mirror/Leech by reply (soon will add for watch and clone)
 - Share to WhatsApp button to share directly after mirroring
