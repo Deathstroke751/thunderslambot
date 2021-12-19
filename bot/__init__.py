@@ -39,6 +39,7 @@ LOGGER = logging.getLogger(__name__)
 
 CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
 if CONFIG_FILE_URL:
+    logging.info('Attempting to fetch remote config')
     res = requests.get(CONFIG_FILE_URL)
     if res.status_code == 200:
         if os.path.exists('config.env'):
