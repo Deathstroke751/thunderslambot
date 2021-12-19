@@ -38,7 +38,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 LOGGER = logging.getLogger(__name__)
 
 CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
-if not CONFIG_FILE_URL:
+if CONFIG_FILE_URL:
     res = requests.get(CONFIG_FILE_URL)
     if res.status_code == 200:
         if os.path.exists('config.env'):
