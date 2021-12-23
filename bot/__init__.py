@@ -25,7 +25,7 @@ socket.setdefaulttimeout(600)
 
 botStartTime = time.time()
 
-# Truncate file log.txt if it exists
+# Truncate log.txt if it exists
 if os.path.exists('log.txt'):
     with open('log.txt', 'r+') as f:
         f.truncate(0)
@@ -37,41 +37,19 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 LOGGER = logging.getLogger(__name__)
 
-CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
-if CONFIG_FILE_URL:
-    logging.info('Attempting to fetch remote config')
-    res = requests.get(CONFIG_FILE_URL)
-    if res.status_code == 200:
-        if os.path.exists('config.env'):
-            logging.info('Rewriting config.env')
-        with open('config.env', 'wb') as f:
-            f.write(res.content)
-    else:
-        logging.error(f"Failed to download config.env {res.status_code}")
-
-load_dotenv('config.env')
-
-SERVER_PORT = os.environ.get('SERVER_PORT', None)
-PORT = os.environ.get('PORT', SERVER_PORT)
-web = subprocess.Popen(
-    [f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
-time.sleep(1)
-alive = subprocess.Popen(["python3", "alive.py"])
-subprocess.run(["mkdir", "-p", "qBittorrent/config"])
-subprocess.run(["cp", "qBittorrent.conf",
-               "qBittorrent/config/qBittorrent.conf"])
-subprocess.run(["qbittorrent-nox", "-d", "--profile=."])
-Interval = []
-DRIVES_NAMES = []
-DRIVES_IDS = []
-INDEX_URLS = []
-
 
 def getConfig(name: str):
+    """
+    Returns an environment variable with given key from os.environ dict.
+    Raises a KeyError if key is not present, obviously.
+    """
     return os.environ[name]
 
 
 def mktable():
+    """
+    Creates a Postgres table at DB_URI. Exits the program in case of an error.
+    """
     try:
         conn = psycopg2.connect(DB_URI)
         cur = conn.cursor()
@@ -84,23 +62,10 @@ def mktable():
         exit(1)
 
 
-try:
-    if bool(getConfig('_____REMOVE_THIS_LINE_____')):
-        logging.error('The README.md file there to be read! Exiting now!')
-        exit()
-except KeyError:
-    pass
-
-aria2 = aria2p.API(
-    aria2p.Client(
-        host="http://localhost",
-        port=6800,
-        secret="",
-    )
-)
-
-
 def get_client() -> qba.TorrentsAPIMixIn:
+    """
+    Returns a qbitorrent client
+    """
     qb_client = qba.Client(host="localhost", port=8090,
                            username="admin", password="adminadmin")
     try:
@@ -111,6 +76,53 @@ def get_client() -> qba.TorrentsAPIMixIn:
         logging.error(str(e))
         return None
 
+
+# Download config.env if a remote source is provided
+CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
+if CONFIG_FILE_URL:
+    logging.info('Attempting to fetch remote config')
+    res = requests.get(CONFIG_FILE_URL)
+    if res.status_code == 200:
+        if os.path.exists('config.env'):
+            logging.info('Rewriting config.env')
+        with open('config.env', 'wb') as f:
+            f.write(res.content)
+    else:
+        logging.error(f"Failed to download config.env {res.status_code}")
+
+load_dotenv('config.env')  # Load environment variables from config.env
+
+SERVER_PORT = os.environ.get('SERVER_PORT', None)
+PORT = os.environ.get('PORT', SERVER_PORT)
+web = subprocess.Popen(
+    [f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)
+time.sleep(1)
+alive = subprocess.Popen(["python3", "alive.py"])
+subprocess.run(["mkdir", "-p", "qBittorrent/config"])
+subprocess.run(["cp", "qBittorrent.conf",
+               "qBittorrent/config/qBittorrent.conf"])
+subprocess.run(["qbittorrent-nox", "-d", "--profile=."])
+
+Interval = []
+DRIVES_NAMES = []
+DRIVES_IDS = []
+INDEX_URLS = []
+
+try:
+    if bool(getConfig('_____REMOVE_THIS_LINE_____')):
+        logging.error('Please read README.md! Exiting now!')
+        exit()
+except KeyError:
+    pass
+
+# Create an aria2 client
+aria2 = aria2p.API(
+    aria2p.Client(
+        host="http://localhost",
+        port=6800,
+        secret="",
+    )
+)
 
 DOWNLOAD_DIR = None
 BOT_TOKEN = None
@@ -123,6 +135,7 @@ status_reply_dict = {}
 # Key: update.message.message_id
 # Value: An object of Status
 download_dict = {}
+
 # Stores list of users and chats the bot is authorized to use in
 AUTHORIZED_CHATS = set()
 SUDO_USERS = set()
@@ -140,17 +153,15 @@ if os.path.exists('sudo_users.txt'):
 
 try:
     achats = getConfig('AUTHORIZED_CHATS')
-    achats = achats.split(" ")
-    for chats in achats:
-        AUTHORIZED_CHATS.add(int(chats))
+    for chat in achats.split():
+        AUTHORIZED_CHATS.add(int(chat))
 except:
     pass
 
 try:
     schats = getConfig('SUDO_USERS')
-    schats = schats.split(" ")
-    for chats in schats:
-        SUDO_USERS.add(int(chats))
+    for chat in schats.split():
+        SUDO_USERS.add(int(chat))
 except:
     pass
 
@@ -168,7 +179,7 @@ try:
     TELEGRAM_API = getConfig('TELEGRAM_API')
     TELEGRAM_HASH = getConfig('TELEGRAM_HASH')
 except KeyError as e:
-    LOGGER.error("One or more env variables missing! Exiting now")
+    LOGGER.error(f"Missing key `{e}`! Exiting now")
     exit(1)
 
 try:
@@ -178,11 +189,11 @@ try:
 except KeyError:
     DB_URI = None
 
-if DB_URI is not None:
+if DB_URI:
     try:
         conn = psycopg2.connect(DB_URI)
         cur = conn.cursor()
-        sql = "SELECT * from users;"
+        sql = "SELECT * FROM users;"
         cur.execute(sql)
         rows = cur.fetchall()  # returns a list ==> (uid, sudo)
         for uid, sudo in rows:
@@ -415,7 +426,6 @@ try:
         if res.status_code == 200:
             with open('token.pickle', 'wb+') as f:
                 f.write(res.content)
-                f.close()
         else:
             logging.error(f"Failed to download token.pickle {res.status_code}")
             raise KeyError
@@ -431,9 +441,9 @@ try:
         if res.status_code == 200:
             with open('accounts.zip', 'wb+') as f:
                 f.write(res.content)
-                f.close()
         else:
-            logging.error(f"Failed to download accounts.zip {res.status_code}")
+            logging.error(
+                f"Failed to download `accounts.zip` {res.status_code}")
             raise KeyError
         subprocess.run(["unzip", "-q", "-o", "accounts.zip"])
         os.remove("accounts.zip")
@@ -449,7 +459,6 @@ try:
         if res.status_code == 200:
             with open('drive_folder', 'wb+') as f:
                 f.write(res.content)
-                f.close()
         else:
             logging.error(f"Failed to download drive_folder {res.status_code}")
             raise KeyError
@@ -459,9 +468,8 @@ except KeyError:
 DRIVES_NAMES.append("Main")
 DRIVES_IDS.append(parent_id)
 if os.path.exists('drive_folder'):
-    with open('drive_folder', 'r+') as f:
-        lines = f.readlines()
-        for line in lines:
+    with open('drive_folder', 'r') as f:
+        for line in f:
             try:
                 temp = line.strip().split()
                 DRIVES_IDS.append(temp[1])
