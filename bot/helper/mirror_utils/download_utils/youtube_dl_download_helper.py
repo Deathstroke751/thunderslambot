@@ -1,6 +1,6 @@
 from .download_helper import DownloadHelper
 import time
-from youtube_dl import YoutubeDL, DownloadError
+from yt_dlp import YoutubeDL, DownloadError
 from bot import download_dict_lock, download_dict
 from ..status_utils.youtube_dl_download_status import YoutubeDLDownloadStatus
 import logging
@@ -155,8 +155,8 @@ class YoutubeDLHelper(DownloadHelper):
         LOGGER.info(f"Downloading with YT-DL: {link}")
         self.__gid = f"{self.vid_id}{self.__listener.uid}"
         if qual == "audio":
-          self.opts['format'] = 'bestaudio/best'
-          self.opts['postprocessors'] = [{'key': 'FFmpegExtractAudio','preferredcodec': 'mp3','preferredquality': '320',}]
+          self.opts['format'] = 'ba/b'
+          self.opts['postprocessor-args'] = [{'key': 'ExtractAudio','audio-format': 'mp3','audio-quality': '320',}]
         else:
           self.opts['format'] = qual
         if not self.is_playlist:
