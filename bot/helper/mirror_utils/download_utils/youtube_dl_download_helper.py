@@ -1,6 +1,6 @@
 from .download_helper import DownloadHelper
 import time
-from youtube_dl import YoutubeDL, DownloadError
+from yt_dlp import YoutubeDL, DownloadError
 from bot import download_dict_lock, download_dict
 from ..status_utils.youtube_dl_download_status import YoutubeDLDownloadStatus
 import logging
@@ -41,6 +41,7 @@ class YoutubeDLHelper(DownloadHelper):
         self.__listener = listener
         self.__gid = ""
         self.opts = {
+            'merge_output_format': 'mp4',
             'progress_hooks': [self.__onDownloadProgress],
             'logger': MyLogger(self),
             'usenetrc': True
@@ -92,7 +93,8 @@ class YoutubeDLHelper(DownloadHelper):
 
     def __onDownloadStart(self):
         with download_dict_lock:
-            download_dict[self.__listener.uid] = YoutubeDLDownloadStatus(self, self.__listener)
+            download_dict[self.__listener.uid] = YoutubeDLDownloadStatus(
+                self, self.__listener)
 
     def __onDownloadComplete(self):
         self.__listener.onDownloadComplete()
@@ -110,7 +112,8 @@ class YoutubeDLHelper(DownloadHelper):
                 name = ydl.prepare_filename(result) if name == "" else name
                 # noobway hack for changing extension after converting to mp3
                 if qual == "audio":
-                  name = name.replace(".mp4", ".mp3").replace(".webm", ".mp3")
+                    name = name.replace(
+                        ".mp4", ".mp3").replace(".webm", ".mp3")
             except DownloadError as e:
                 self.onDownloadError(str(e))
                 return
@@ -155,10 +158,11 @@ class YoutubeDLHelper(DownloadHelper):
         LOGGER.info(f"Downloading with YT-DL: {link}")
         self.__gid = f"{self.vid_id}{self.__listener.uid}"
         if qual == "audio":
-          self.opts['format'] = 'bestaudio/best'
-          self.opts['postprocessors'] = [{'key': 'FFmpegExtractAudio','preferredcodec': 'mp3','preferredquality': '320',}]
+            self.opts['format'] = 'bestaudio/best'
+            self.opts['postprocessors'] = [
+                {'key': 'FFmpegExtractAudio', 'preferredcodec': 'mp3', 'preferredquality': '320', }]
         else:
-          self.opts['format'] = qual
+            self.opts['format'] = qual
         if not self.is_playlist:
             self.opts['outtmpl'] = f"{path}/{self.name}"
         else:
