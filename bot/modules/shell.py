@@ -39,5 +39,5 @@ def shell(update, context):
 
 
 SHELL_HANDLER = CommandHandler(BotCommands.ShellCommand, shell,
-                               filters=CustomFilters.sudo_user, run_async=True)
+                               filters=CustomFilters.sudo_user | CustomFilters.mirror_owner_filter, run_async=True)
 dispatcher.add_handler(SHELL_HANDLER)
