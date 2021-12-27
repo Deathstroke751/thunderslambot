@@ -48,7 +48,7 @@ This is a Telegram Bot written in Python for mirroring files on the Internet to 
 - [ ] Switchable Team Drives
 - [ ] Assign Folder/Directory on Download
 - [ ] Mega.nz bypass limitation
-- [ ] Fix ytdl
+- [x] Fix ytdl
 
 - Extract these filetypes and uploads to Google Drive
 ```
