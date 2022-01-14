@@ -78,7 +78,7 @@ def get_client() -> qba.TorrentsAPIMixIn:
 
 
 # Download config.env if a remote source is provided
-CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL', None)
+CONFIG_FILE_URL = os.environ.get('CONFIG_FILE_URL')
 if CONFIG_FILE_URL:
     logging.info('Attempting to fetch remote config')
     res = requests.get(CONFIG_FILE_URL)
@@ -92,7 +92,7 @@ if CONFIG_FILE_URL:
 
 load_dotenv('config.env')  # Load environment variables from config.env
 
-SERVER_PORT = os.environ.get('SERVER_PORT', None)
+SERVER_PORT = os.environ.get('SERVER_PORT')
 PORT = os.environ.get('PORT', SERVER_PORT)
 web = subprocess.Popen(
     [f"gunicorn wserver:start_server --bind 0.0.0.0:{PORT} --worker-class aiohttp.GunicornWebWorker"], shell=True)

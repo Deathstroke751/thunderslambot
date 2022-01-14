@@ -6,8 +6,8 @@ import time
 import requests
 import os
 
-BASE_URL = os.environ.get('BASE_URL_OF_BOT', None)
-PORT = os.environ.get('PORT', None)
+BASE_URL = os.environ.get('BASE_URL_OF_BOT')
+PORT = os.environ.get('PORT')
 if PORT and BASE_URL:
     while True:
         time.sleep(600)
