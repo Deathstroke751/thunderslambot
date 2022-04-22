@@ -159,6 +159,13 @@ except:
     pass
 
 try:
+    DOMETG= getConfig('DOMETG')
+        raise KeyError
+except KeyError:
+    DOMETG = None
+
+
+try:
     schats = getConfig('SUDO_USERS')
     for chat in schats.split():
         SUDO_USERS.add(int(chat))
