@@ -159,8 +159,7 @@ except:
     pass
 
 try:
-    DOMETG= getConfig('DOMETG')
-        raise KeyError
+    DOMETG = getConfig('DOMETG')
 except KeyError:
     DOMETG = None
 
